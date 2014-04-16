@@ -1,5 +1,4 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) )
     exit ;
 
@@ -40,6 +39,9 @@ function ls_bp_hashtags_querystring( $query_string , $object ) {
     }
 
     if ( empty( $bp->action_variables[ 0 ] ) ) {
+
+        $query_string = "" ;
+        echo $query_string ;
         return $query_string ;
     }
     if ( count( $bp->action_variables ) > 1 ) {
@@ -135,9 +137,8 @@ function etivite_bp_activity_hashtags_action_router() {
         return false ;
 
     if ( empty( $bp->action_variables[ 0 ] ) ) {
-            return false ;
+        bp_core_load_template( 'activity/index' ) ;
     }
-
     if ( count( $bp->action_variables ) > 1 ) {
         if ( 'feed' == $bp->action_variables[ 1 ] ) {
 
@@ -276,24 +277,31 @@ function ls_bp_hashtags_get_activity_ids( $hashtag ) {
 
 /**
  * Generates hashtags list
+ * @uses wp_generate_tag_cloud()
  * @global type $wpdb
+ * @param array $args, see wp_generate_tag_cloud() for args values
+ * @return string
+ * @author Stergatu Lena <stergatu@cti.gr>
+ * @version 1, 16/4/2014
  */
-function ls_bp_hashtags_generate_cloud() {
+function ls_bp_hashtags_generate_cloud( $args = array () ) {
     global $wpdb ;
     $bp = buddypress() ;
+
     $link = $bp->root_domain . "/" . $bp->activity->slug . "/" . BP_ACTIVITY_HASHTAGS_SLUG . "/" ;
     bp_hashtags_set_constants() ;
     $results = $wpdb->get_results( 'SELECT COUNT(hashtag_name) as count, CONCAT("#",hashtag_name) as name, CONCAT("' . $link . '", hashtag_slug) as link
         FROM ' . BP_HASHTAGS_TABLE . ' GROUP BY hashtag_name' ) ;
 //    $results = urlencode_deep( $results ) ;
 
-    $args = array (
-        'smallest' => 10 , 'largest' => 10 , 'unit' => 'pt' , 'number' => 20 ,
+    $defaults = array (
+        'smallest' => 10 , 'largest' => 10 , 'unit' => 'pt' , 'number' => 0 ,
         'format' => 'flat' , 'separator' => ",\n\n" , 'orderby' => 'count' , 'order' => 'DESC' ,
         'topic_count_text_callback' => 'default_topic_count_text' ,
         'topic_count_scale_callback' => 'default_topic_count_scale' , 'filter' => 1 ,
-    ) ;
-
+            ) ;
+    $args = wp_parse_args( $args , $defaults ) ;
+    extract( $args ) ;
     $tag_cloud = wp_generate_tag_cloud( $results , $args ) ;
     return $tag_cloud ;
 }
@@ -305,8 +313,8 @@ function ls_bp_hashtags_cloud() {
 
     if ( bp_is_activity_directory() ) {
         echo '<div align="right"><h5>' . __( 'Popular Hashtags' , 'bp-hashtags' ) . '</h5>' ;
-    echo ls_bp_hashtags_generate_cloud() ;
-    echo '</div>' ;
+        echo ls_bp_hashtags_generate_cloud() ;
+        echo '</div>' ;
     }
 }
 
@@ -347,3 +355,18 @@ function ls_bp_hashtags_add_hashtags_text() {
 }
 
 add_action( 'bp_activity_post_form_options' , 'ls_bp_hashtags_add_hashtags_text' ) ;
+
+/**
+ * Adds a tab "Popular Terms" into activity directory
+ */
+function ls_bp_hashtags_activity_tab() {
+    ?>
+        <li id="activity-tags"><a href="<?php
+        bp_activity_directory_permalink() ;
+        echo BP_ACTIVITY_HASHTAGS_SLUG ;
+        ?>" title="<?php esc_attr_e( 'Popular Terms.' , 'bp-hashtags' ) ; ?>"><?php _e( 'Popular Terms ' , 'bp-hashtags' ) ; ?></a></li>
+    <?php
+}
+
+add_action( 'bp_activity_type_tabs' , 'ls_bp_hashtags_activity_tab' ) ;
+
