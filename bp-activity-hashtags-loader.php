@@ -2,7 +2,7 @@
 /*
   Plugin Name: BuddyPress Hashtags LS
   Plugin URI:
-  Description: Based on BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) Enable #hashtags linking within activity stream content - converts before database.
+  Description: Based on BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) Enable #hashtags linking without changing the activity content in database.
   Author: @lenasterg
   Author URI: http://lenasterg.wordpress.com
   License: GNU GENERAL PUBLIC LICENSE 3.0 http://www.gnu.org/licenses/gpl.txt
@@ -39,21 +39,11 @@ function ls_bp_hashtags_init() {
     include_once ( dirname( __FILE__ ) . '/widgets.php' ) ;
     include_once ( dirname( __FILE__ ) . '/shortcodes.php' ) ;
 
-    //same set used for atme mentions
-    add_filter( 'bp_activity_comment_content' , 'ls_bp_hashtags_filter' ) ;
-    add_filter( 'bp_activity_new_update_content' , 'ls_bp_hashtags_filter' ) ;
-    add_filter( 'group_forum_topic_text_before_save' , 'ls_bp_hashtags_filter' ) ;
-    add_filter( 'group_forum_post_text_before_save' , 'ls_bp_hashtags_filter' ) ;
-    add_filter( 'groups_activity_new_update_content' , 'ls_bp_hashtags_filter' ) ;
 
-    //support edit activity stream plugin
-    add_filter( 'bp_edit_activity_action_edit_content' , 'ls_bp_hashtags_filter' ) ;
+    add_filter( 'the_content' , 'ls_bp_hashtags_filter' ) ;
+    add_filter( 'bp_get_activity_content_body' , 'ls_bp_hashtags_filter2' ) ;
+
     add_action( 'bp_activity_after_save' , 'ls_bp_hashtags_add_activity_id' ) ;
-    //ignore this - if we wanted to filter after - this would be it
-    //but then we can't search by the #hashtag via search_terms (since the trick is the ending </a>)
-    //as the search_term uses LIKE %%term%% so we would match #child #children
-    //add_filter( 'bp_get_activity_content_body', 'ls_bp_hashtags_filter' );
-
     add_action( bp_core_admin_hook() , 'ls_bp_hashtags_admin_add_admin_menu' ) ;
 }
 
