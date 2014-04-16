@@ -21,7 +21,26 @@ function ls_bp_hashtags_filter( $content ) {
             $content = preg_replace( $pattern , ' <a href="' . $bp->root_domain . "/" . $bp->activity->slug . "/" . BP_ACTIVITY_HASHTAGS_SLUG . "/" . urlencode( htmlspecialchars( $hashtag_noHash ) ) . '" rel="nofollow" class="hashtag">' . htmlspecialchars( $hashtag ) . '</a>' , $content ) ;
         }
     }
-
+    return $content ;
+}
+/**
+ *
+ * @param type $content
+ * @return type
+ * @version 2, 8/4/2014
+ *
+ */
+function ls_bp_hashtags_filter2( $content ) {
+    $bp = buddypress() ;
+    $hashtags = ls_bp_hashtags_get_from_string( $content ) ;
+    if ( $hashtags ) {
+        //but we need to watch for edits and if something was already wrapped in html link - thus check for space or word boundary prior
+        foreach ( ( array ) $hashtags as $hashtag ) {
+            $pattern = "/(^|\s|\b)" . $hashtag . "($|\b)/u" ;
+            $hashtag_noHash = str_replace( "#" , '' , $hashtag ) ;
+            $content = str_replace( $hashtag , ' <a href="' . $bp->root_domain . "/" . $bp->activity->slug . "/" . BP_ACTIVITY_HASHTAGS_SLUG . "/" . urlencode( htmlspecialchars( $hashtag_noHash ) ) . '" rel="nofollow" class="hashtag">' . $hashtag . '</a>' , $content ) ;
+        }
+    }
     return $content ;
 }
 
@@ -174,9 +193,6 @@ function ls_bp_hashtags_get_from_string( $string ) {
     $hashtags = FALSE ;
     $pattern = '/(#\w+)/u' ;
     $string = wp_strip_all_tags( $string ) ;
-    //$pattern = '/(?(?<!color: )(?<!color: )[#]([_0-9a-zA-Z-]+)|(^|\s|\b)[#]([_0-9a-zA-Z-]+))/';
-    //$pattern = '/(?(?<!color: )(?<!color: )[#]([_0-9a-zA-Z-]+)|(^|\s|\b)[#]([\w]+))/u' ;
-    //  preg_match_all( $pattern , $string , $matches ) ;
     preg_match_all( "/(#\w+)/u" , $string , $matches ) ;
 
     if ( $matches ) {
@@ -312,7 +328,7 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
 function ls_bp_hashtags_cloud() {
 
     if ( bp_is_activity_directory() ) {
-        echo '<div align="right"><h5>' . __( 'Popular Hashtags' , 'bp-hashtags' ) . '</h5>' ;
+        echo '<div align="right"><h5>' . __( 'Popular Hashtags across network' , 'bp-hashtags' ) . '</h5>' ;
         echo ls_bp_hashtags_generate_cloud() ;
         echo '</div>' ;
     }
@@ -357,7 +373,7 @@ function ls_bp_hashtags_add_hashtags_text() {
 add_action( 'bp_activity_post_form_options' , 'ls_bp_hashtags_add_hashtags_text' ) ;
 
 /**
- * Adds a tab "Popular Terms" into activity directory
+ * Adds a tab "Popular Hashtags across network" into activity directory
  * @deprecated
  */
 function ls_bp_hashtags_activity_tab() {
@@ -365,7 +381,7 @@ function ls_bp_hashtags_activity_tab() {
         <li id="activity-tags"><a href="<?php
         bp_activity_directory_permalink() ;
         echo BP_ACTIVITY_HASHTAGS_SLUG ;
-        ?>" title="<?php esc_attr_e( 'Popular Terms.' , 'bp-hashtags' ) ; ?>"><?php _e( 'Popular Terms ' , 'bp-hashtags' ) ; ?></a></li>
+        ?>" title="<?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?>"><?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?></a></li>
     <?php
 }
 
