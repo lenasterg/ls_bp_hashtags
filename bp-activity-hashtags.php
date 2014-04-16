@@ -358,6 +358,7 @@ add_action( 'bp_activity_post_form_options' , 'ls_bp_hashtags_add_hashtags_text'
 
 /**
  * Adds a tab "Popular Terms" into activity directory
+ * @deprecated
  */
 function ls_bp_hashtags_activity_tab() {
     ?>
@@ -368,5 +369,5 @@ function ls_bp_hashtags_activity_tab() {
     <?php
 }
 
-add_action( 'bp_activity_type_tabs' , 'ls_bp_hashtags_activity_tab' ) ;
+//add_action( 'bp_activity_type_tabs' , 'ls_bp_hashtags_activity_tab' ) ;
 
