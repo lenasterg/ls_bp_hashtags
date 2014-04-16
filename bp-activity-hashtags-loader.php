@@ -37,6 +37,7 @@ function ls_bp_hashtags_init() {
 
     require( dirname( __FILE__ ) . '/bp-activity-hashtags.php' ) ;
     include_once ( dirname( __FILE__ ) . '/widgets.php' ) ;
+    include_once ( dirname( __FILE__ ) . '/shortcodes.php' ) ;
 
     //same set used for atme mentions
     add_filter( 'bp_activity_comment_content' , 'ls_bp_hashtags_filter' ) ;
