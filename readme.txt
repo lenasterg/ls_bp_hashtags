@@ -9,7 +9,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 
 
 
-Enables #hashtags linking within activity stream content and provides a "Popular Hashtags" widget and shortcode [ls_bp_hashtags].  Based on BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
+Enables #hashtags linking within activity stream content and provides a "Popular Hashtags" widget and shortcode [ls_bp_hashtags].
+Based on BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
 
 == Description ==
 
@@ -18,10 +19,9 @@ This plugin will convert #hashtags references to a link (activity search page) p
 Works on the same filters as the @atusername mention filter (see Extra Configuration if you want to enable this on blog/comments activity) - this will convert anything with a leading #
 
 Warnings:
-1. This plugin converts #hashtags prior to database insert/update. Uninstalling this plugin will not remove #hashtags links from the activity content.
-2. The plugin creates an extra table in the database which is not deleted if the plugin is unistalled or deleted.
+1.The plugin creates an extra table in the database which is not deleted if the plugin is unistalled or deleted.
 
-Please note: accepted pattern is: `/(#\w+)/u` - all linked hashtags will have a css a.hashtag - currently does support unicode.
+Please note: accepted pattern is: `/(#\w+)/u` - all linked hashtags will have a css a.hashtag - does support unicode.
 
 
 == Installation ==
@@ -36,15 +36,6 @@ Please note: accepted pattern is: `/(#\w+)/u` - all linked hashtags will have a 
 
 Yes it does.
 
-= Can this be enabled with other content? =
-
-Possible - try applying the filter `bp_activity_hashtags_filter`
-
-See extra configuration
-
-= Why convert #hashtags into links before the database save? =
-
-The trick with activity search_terms (which is used for @atmentions) is the ending </a> since BuddyPress's sql for searching is %%term%% so #child would match #children
 
 = What url is used? =
 
@@ -65,4 +56,3 @@ Greek translation added
 
 == Extra Configuration ==
 
-`
