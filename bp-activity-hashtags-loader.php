@@ -6,12 +6,12 @@
   Author: @lenasterg
   Author URI: http://lenasterg.wordpress.com
   License: GNU GENERAL PUBLIC LICENSE 3.0 http://www.gnu.org/licenses/gpl.txt
-  Version: 1
+  Version: 1.1
   Text Domain: bp-hashtags
   Network: true
  */
-define( 'BP_HASHTAGS_VERSION' , '1' ) ;
-define( 'BP_HASHTAGS_DB_VERSION' , '1' ) ;
+define( 'BP_HASHTAGS_VERSION' , '1.1' ) ;
+define( 'BP_HASHTAGS_DB_VERSION' , '1.1' ) ;
 
 if ( ! defined( 'BP_ACTIVITY_HASHTAGS_SLUG' ) ) {
     define( 'BP_ACTIVITY_HASHTAGS_SLUG' , 'tags' ) ;
@@ -100,23 +100,29 @@ function etivite_plugin_get_version() {
  * SQL create command for BP_HASHTAGS_TABLE
  * @since version 0.5
  * @author stergatu
- * @version 1.0, 8/4/2014
+ * @version 2.0, 23/4/2014
  * @param type $charset_collate
  * @return string
  */
 function bp_hashtags_tableCreate( $charset_collate ) {
     $bp = buddypress() ;
-    $activity_table = $bp->table_prefix . 'bp_activity' ;
+    $activity_table = 'bp_activity' ;
     $toSql = $sql[] = "CREATE TABLE " . BP_HASHTAGS_TABLE . " (
 		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                 hashtag_name VARCHAR(255) NOT NULL,
                                 hashtag_slug TEXT NOT NULL,
 		  		table_name VARCHAR(255) DEFAULT '" . $activity_table . "',
-                                value_id int NOT NULL,
+                                value_id bigint(20) NOT NULL,
+                                if_activity_component VARCHAR(255) DEFAULT '',
+                                if_activity_item_id bigint(20),
+                                hide_sitewide bool DEFAULT 0,
                                 user_id int NOT NULL,
                                 created_ts DATETIME NOT NULL,
 				KEY hashtag_name (hashtag_name),
-				KEY user_id (user_id),
+                                KEY if_activity_item_id (if_activity_item_id),
+                                KEY if_activity_component (if_activity_component),
+				KEY hide_sitewide (hide_sitewide),
+                                KEY user_id (user_id),
                                 KEY created_ts (created_ts)
 		 	   ) {$charset_collate};" ;
     return $toSql ;
