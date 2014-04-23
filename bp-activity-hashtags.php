@@ -228,6 +228,9 @@ function ls_bp_hashtags_add_activity_id( $activity ) {
             'hashtag_name' => htmlspecialchars( $hashtag ) ,
             'hashtag_slug' => urlencode( htmlspecialchars( $hashtag ) ) ,
             'value_id' => $activity->id ,
+            'if_activity_component' => $activity->component ,
+            'if_activity_item_id' => $activity->item_id ,
+            'hide_sitewide' => $activity->hide_sitewide ,
             'created_ts' => $activity->date_recorded ,
             'user_id' => $activity->user_id
         ) ) ;
@@ -249,9 +252,9 @@ function ls_bp_hashtags_delete_activity_id( $activity ) {
     bp_hashtags_set_constants() ;
 
     if ( is_int( $activity ) ) {
-        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $activity ) ) ;
+        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $activity , 'table_name' => 'bp_activity' ) ) ;
     } else {
-        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $activity->id ) ) ;
+        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $activity->id , 'table_name' => 'bp_activity' ) ) ;
     }
 }
 
@@ -266,18 +269,20 @@ function ls_bp_hashtags_clear_deleted_activity( $deleted_ids ) {
     global $wpdb ;
     bp_hashtags_set_constants() ;
     foreach ( ( array ) $deleted_ids as $deleted_id ) {
-        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $deleted_id ) ) ;
+        $wpdb->delete( BP_HASHTAGS_TABLE , array ( 'value_id' => $deleted_id , 'table_name' => 'bp_activity' ) ) ;
     }
 }
 
 add_action( 'bp_activity_deleted_activities' , 'ls_bp_hashtags_clear_deleted_activity' ) ;
+//if an activity is marked as spam deleted from the bp_hashtags table
+add_action( 'bp_activity_action_spam_activity' , 'ls_bp_hashtags_clear_deleted_activity' ) ;
 
 /**
  *
  * @global type $wpdb
  * @param type $hashtag
  * @return type
- * @version 1, 9/4/2014
+ * @version 2, 23/4/2014
  */
 function ls_bp_hashtags_get_activity_ids( $hashtag ) {
     global $wpdb ;
@@ -286,7 +291,7 @@ function ls_bp_hashtags_get_activity_ids( $hashtag ) {
     $results = $wpdb->get_col(
             "
 	SELECT value_id
-	FROM " . BP_HASHTAGS_TABLE . " WHERE  hashtag_name = '" . urldecode( $hashtag ) . "'" ) ;
+	FROM " . BP_HASHTAGS_TABLE . " WHERE  hashtag_name = '" . urldecode( $hashtag ) . "' and table_name='bp_activity'" ) ;
 
     return $results ;
 }
