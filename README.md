@@ -1,4 +1,4 @@
-===  BuddyPress Hashtags LS ===
+==  BuddyPress Hashtags LS ==
 Contributors: lenasterg
 Tags: buddypress, activity stream, activity, hashtag, hashtags
 Requires at least: PHP 5.2, WordPress 3.5.2, BuddyPress 1.7
