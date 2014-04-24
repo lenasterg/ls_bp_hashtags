@@ -14,7 +14,7 @@ function ls_bp_hashtags_filter( $content ) {
 
     $hashtags = ls_bp_hashtags_get_from_string( $content ) ;
     if ( $hashtags ) {
-        //but we need to watch for edits and if something was already wrapped in html link - thus check for space or word boundary prior
+//but we need to watch for edits and if something was already wrapped in html link - thus check for space or word boundary prior
         foreach ( ( array ) $hashtags as $hashtag ) {
             $pattern = "/(^|\s|\b)" . $hashtag . "($|\b)/u" ;
             $hashtag_noHash = str_replace( "#" , '' , $hashtag ) ;
@@ -23,6 +23,7 @@ function ls_bp_hashtags_filter( $content ) {
     }
     return $content ;
 }
+
 /**
  *
  * @param type $content
@@ -34,7 +35,7 @@ function ls_bp_hashtags_filter2( $content ) {
     $bp = buddypress() ;
     $hashtags = ls_bp_hashtags_get_from_string( $content ) ;
     if ( $hashtags ) {
-        //but we need to watch for edits and if something was already wrapped in html link - thus check for space or word boundary prior
+//but we need to watch for edits and if something was already wrapped in html link - thus check for space or word boundary prior
         foreach ( ( array ) $hashtags as $hashtag ) {
             $pattern = "/(^|\s|\b)" . $hashtag . "($|\b)/u" ;
             $hashtag_noHash = str_replace( "#" , '' , $hashtag ) ;
@@ -45,38 +46,42 @@ function ls_bp_hashtags_filter2( $content ) {
 }
 
 /**
- * Add the hashtags into the activity query_string
- * @param string $query_string
- * @param type $object
- * @return string
- * @version 2, stergatu 8/4/2014
+ * Parses the hashtags into the activity query args
+ * @param array $retval
+ * @return array
+ * @since 1.2
+ * @version 1, 24/4/2014
  */
-function ls_bp_hashtags_querystring( $query_string , $object ) {
+function ls_bp_hashtags_activity( $retval ) {
     $bp = buddypress() ;
     if ( ! bp_is_activity_component() || $bp->current_action != BP_ACTIVITY_HASHTAGS_SLUG ) {
-        return $query_string ;
+        return $retval ;
     }
-
     if ( empty( $bp->action_variables[ 0 ] ) ) {
-
-        $query_string = "" ;
-        echo $query_string ;
-        return $query_string ;
+        return $retval ;
     }
     if ( count( $bp->action_variables ) > 1 ) {
         if ( 'feed' == $bp->action_variables[ 1 ] ) {
-            return $query_string ;
+            return $retval ;
         }
     }
-    $ids = ls_bp_hashtags_get_activity_ids( $bp->action_variables[ 0 ] ) ;
+    $bp_hashtags_args = array () ;
+    $bp_hashtags_args[ 'hashtag_name' ] = $bp->action_variables[ 0 ] ;
+    $bp_hashtags_args[ 'user_id' ] = bp_displayed_user_id() ;
+    $bp_hashtags_args[ 'if_activity_item_id' ] = bp_get_current_group_id() ;
+    $bp_hashtags_args[ 'table_name' ] = 'bp_activity' ;
+
+    $ids = ls_bp_hashtags_get_activity_ids( $bp_hashtags_args ) ;
     if ( count( $ids ) == 0 ) {
-        $query_string .= "&include=0,0" ;
+        $retval[ 'include' ] = "0,0" ;
     }
-    $query_string.='&display_comments&in=' . implode( ',' , $ids ) ;
-    return $query_string ;
+    $retval[ 'display_comments' ] = 1 ;
+    $retval[ 'show_hidden' ] = 1 ;
+    $retval[ 'in' ] = implode( ',' , $ids ) ;
+    return $retval ;
 }
 
-add_filter( 'bp_ajax_querystring' , 'ls_bp_hashtags_querystring' , 11 , 2 ) ;
+add_filter( 'bp_after_has_activities_parse_args' , 'ls_bp_hashtags_activity' ) ;
 
 //thanks r-a-y for the snippet
 /**
@@ -280,20 +285,86 @@ add_action( 'bp_activity_action_spam_activity' , 'ls_bp_hashtags_clear_deleted_a
 /**
  *
  * @global type $wpdb
- * @param type $hashtag
+ * @param type array
+ * @param string $hashtag
  * @return type
- * @version 2, 23/4/2014
+ * @version 3, 24/4/2014
  */
-function ls_bp_hashtags_get_activity_ids( $hashtag ) {
+function ls_bp_hashtags_get_activity_ids( $args = array () ) {
     global $wpdb ;
+    $bp = buddypress() ;
     bp_hashtags_set_constants() ;
-
+    $toWhere = ls_bp_hashtags_generate_query_limitations( $args ) ;
     $results = $wpdb->get_col(
             "
 	SELECT value_id
-	FROM " . BP_HASHTAGS_TABLE . " WHERE  hashtag_name = '" . urldecode( $hashtag ) . "' and table_name='bp_activity'" ) ;
-
+	FROM " . BP_HASHTAGS_TABLE . " WHERE  1=1   " . $toWhere ) ;
     return $results ;
+}
+
+/**
+ * Create the query criteria
+ * @param array $args
+ * @return string
+ * @version 1, 24/4/2014
+ * @author stergatu
+ */
+function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
+    $bp = buddypress() ;
+
+    if ( isset( $args[ 'hashtag_name' ] ) ) {
+        $query_hashtag = ' AND hashtag_name ="' . urldecode( $args[ 'hashtag_name' ] ) . '" ' ;
+    }
+    if ( $args[ 'user_id' ] != 0 ) {
+        $query_user = ' AND user_id=' . absint( $args[ 'user_id' ] ) ;
+    }
+    if ( $args[ 'if_activity_item_id' ] != 0 ) {
+        $query_item_id = ' AND if_activity_item_id=' . absint( $args[ 'if_activity_item_id' ] ) ;
+    }
+
+    $args = ls_bp_hashtags_show_hidden_hashtags( $args ) ;
+    if ( $args[ 'special' ] ) {
+        $query_special = ' AND ' . $args[ 'special' ] ;
+    }
+    if ( $args[ 'hide_sitewide' ] != '' ) {
+        $query_hide_sitewide = ' AND hide_sitewide=' . $args[ 'hide_sitewide' ] ;
+    }
+
+    $toWhere = $query_hashtag . $query_user . $query_item_id . $query_special . $query_hide_sitewide ;
+    return $toWhere ;
+}
+
+/**
+ * Define if the hide_sitewide field should by used
+ * @param type $args
+ * @return string
+ * @version 1, 24/4/2014
+ * @author stergatu
+ */
+function ls_bp_hashtags_show_hidden_hashtags( $args ) {
+    $bp = buddypress() ;
+
+    if ( $bp->loggedin_user->id == 0 ) {
+        $args[ 'hide_sitewide' ] = '0' ;
+        return $args ;
+    } else {
+        $user_groupids = groups_get_user_groups( $bp->loggedin_user->id ) ;
+        if ( $user_groupids[ 'total' ] == 0 ) {
+            $args[ 'hide_sitewide' ] = '0' ;
+            return $args ;
+        }
+        if ( $args[ 'if_activity_item_id' ] == 0 ) {
+            $group_ids = implode( ',' , $user_groupids[ 'groups' ] ) ;
+            $args[ 'hide_sitewide' ] = '' ;
+            $args[ 'special' ] = ' ( hide_sitewide=0 OR  if_activity_item_id in (' . $group_ids . ')) ' ;
+            return $args ;
+        } else {
+            if ( in_array( $args[ 'if_activity_item_id' ] , $user_groupids ) ) {
+                $args[ 'hide_sitewide' ] = '1' ;
+                return $args ;
+            }
+        }
+    }
 }
 
 /**
@@ -303,7 +374,8 @@ function ls_bp_hashtags_get_activity_ids( $hashtag ) {
  * @param array $args, see wp_generate_tag_cloud() for args values
  * @return string
  * @author Stergatu Lena <stergatu@cti.gr>
- * @version 1, 16/4/2014
+ * @version 2, 23/4/2014
+ * @todo add filters instead of if clauses
  */
 function ls_bp_hashtags_generate_cloud( $args = array () ) {
     global $wpdb ;
@@ -311,9 +383,11 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
 
     $link = $bp->root_domain . "/" . $bp->activity->slug . "/" . BP_ACTIVITY_HASHTAGS_SLUG . "/" ;
     bp_hashtags_set_constants() ;
+
+    $toWhere = ls_bp_hashtags_generate_query_limitations( $args ) ;
+
     $results = $wpdb->get_results( 'SELECT COUNT(hashtag_name) as count, CONCAT("#",hashtag_name) as name, CONCAT("' . $link . '", hashtag_slug) as link
-        FROM ' . BP_HASHTAGS_TABLE . ' GROUP BY hashtag_name' ) ;
-//    $results = urlencode_deep( $results ) ;
+        FROM ' . BP_HASHTAGS_TABLE . ' WHERE 1=1 ' . $toWhere . ' GROUP BY hashtag_name' ) ;
 
     $defaults = array (
         'smallest' => 10 , 'largest' => 10 , 'unit' => 'pt' , 'number' => 0 ,
@@ -329,14 +403,24 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
 
 /**
  * echo's the tagcloud
+ * @version 2, 24/4/2014
  */
 function ls_bp_hashtags_cloud() {
-
-    if ( bp_is_activity_directory() ) {
-        echo '<div align="right"><h5>' . __( 'Popular Hashtags across network' , 'bp-hashtags' ) . '</h5>' ;
-        echo ls_bp_hashtags_generate_cloud() ;
-        echo '</div>' ;
+    $args = array () ;
+    if ( bp_is_activity_component() ) {
+        $toHead = __( 'Popular Hashtags across network' , 'bp-hashtags' ) ;
     }
+    if ( bp_is_user_activity() ) {
+        $toHead = __( 'Hashtags by user' , 'bp-hashtags' ) ;
+        $args[ 'user_id' ] = bp_displayed_user_id() ;
+    }
+    if ( bp_is_group_activity() || bp_is_group_home() ) {
+        $toHead = __( 'Hashtags in group' , 'bp-hashtags' ) ;
+        $args[ 'if_activity_item_id' ] = bp_get_current_group_id() ;
+    }
+    echo '<div align="right"><h5>' . $toHead . '</h5>' ;
+    echo ls_bp_hashtags_generate_cloud( $args ) ;
+    echo '</div>' ;
 }
 
 add_action( 'bp_before_activity_loop' , 'ls_bp_hashtags_cloud' , 1 ) ;
@@ -358,7 +442,7 @@ function ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) {
     switch_to_blog( $blog_id ) ;
     $post_types_use_as_bp_hashtags = array ( 'post_tag' , 'category' ) ;
     $types = apply_filters( 'custom_post_type_use_as_bp_hashtags' , $post_types_use_as_bp_hashtags ) ;
-    //$tags = wp_get_object_terms( $post_id , $types ) ;
+//$tags = wp_get_object_terms( $post_id , $types ) ;
 
     $tags = wp_get_object_terms( $post_id , $types , array ( 'fields' => 'names' ) ) ;
     restore_current_blog() ;
