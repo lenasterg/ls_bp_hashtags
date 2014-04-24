@@ -46,6 +46,8 @@ you may define a slug for hashtags via the admin settings page
 
 == Changelog ==
 = 1.1 =
+Fix the issue with activity of private groups.
+Add hashtags cloud into group and user activity.
 Change table schema. Added hide_sitewide, base_activity_component, activity_item_id to database table bp_hashtags
 When an activity is marked as spam it gets deleted from the bp_hashtags table
 
