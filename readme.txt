@@ -10,13 +10,21 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 
 
 Enables #hashtags linking within activity stream content and provides a "Popular Hashtags" widget and shortcode [ls_bp_hashtags].
-Based on BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
+Based on the idea of BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
 
 == Description ==
+This plugin will convert #hashtags references to a link (activity search page) posted to the activity stream.
+It supports Unicode characters (tested with Greek languages).
+In multisite installations also uses the tags and category of a blog post as hashtags.
+It add on the top of the activity loop (activity page, group activity page and user activity page), the popular hashtags as links.
+The visitor can see all related activity by clicking the hashtag.
+There are 2 widgets available:
+- Sitewide hashtags
+- Current group hashtags
 
-This plugin will convert #hashtags references to a link (activity search page) posted to the activity stream
 
-Works on the same filters as the @atusername mention filter (see Extra Configuration if you want to enable this on blog/comments activity) - this will convert anything with a leading #
+Works on the same filters as the @atusername mention filter (see Extra Configuration if you want to enable this on blog/comments activity) - this will convert anything with a leading #.
+
 
 Warnings:
 1.The plugin creates an extra table in the database which is not deleted if the plugin is unistalled or deleted.
@@ -45,7 +53,9 @@ you may define a slug for hashtags via the admin settings page
 
 
 == Changelog ==
+
 = 1.1 =
+New widget: Current group hashtags
 Fix the issue with activity of private groups.
 Add hashtags cloud into group and user activity.
 Change table schema. Added hide_sitewide, base_activity_component, activity_item_id to database table bp_hashtags
@@ -58,5 +68,5 @@ Added the "Popular Hashtags" widget
 Greek translation added
 
 
-
 == Extra Configuration ==
+
