@@ -1,4 +1,5 @@
 ==  BuddyPress Hashtags LS ==
+
 Contributors: lenasterg
 Tags: buddypress, activity stream, activity, hashtag, hashtags
 Requires at least: PHP 5.2, WordPress 3.5.2, BuddyPress 1.7
@@ -12,6 +13,7 @@ Enables #hashtags linking within activity stream content and provides widgets an
 Based on the idea of BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
 
 == Description ==
+
 This plugin will convert #hashtags references to a link (activity search page) posted to the activity stream.
 It supports Unicode characters (tested with Greek languages).
 In multisite installations also uses the tags and category of a blog post as hashtags.
