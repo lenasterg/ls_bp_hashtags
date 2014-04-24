@@ -8,8 +8,7 @@ License: GNU General Public License 3.0 or newer (GPL) http://www.gnu.org/licens
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Q4VCLDW4BFW6L
 
 
-
-Enables #hashtags linking within activity stream content and provides a "Popular Hashtags" widget and shortcode [ls_bp_hashtags].
+Enables #hashtags linking within activity stream content and provides widgets and shortcode [ls_bp_hashtags].
 Based on the idea of BuddyPress Activity Stream Hashtags (http://wordpress.org/extend/plugins/buddypress-activity-stream-hashtags/) but it also stores the hashtag in an extra table in order to allow other actions (Popular hashtags etc) and make lighter database queries.
 
 == Description ==
