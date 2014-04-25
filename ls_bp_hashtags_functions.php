@@ -55,27 +55,32 @@ function ls_bp_hashtags_get_activity_ids( $args = array () ) {
  * Create the query criteria
  * @param array $args
  * @return string
- * @version 1, 24/4/2014
+ * @version 2, 25/4/2014
  * @author stergatu
  */
 function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
     $bp = buddypress() ;
 
+    $query_hashtag = '' ;
     if ( isset( $args[ 'hashtag_name' ] ) ) {
         $query_hashtag = ' AND hashtag_name ="' . urldecode( $args[ 'hashtag_name' ] ) . '" ' ;
     }
-    if ( $args[ 'user_id' ] != 0 ) {
+    $query_user = '' ;
+    if ( array_key_exists( 'user_id' , $args ) && $args[ 'user_id' ] != 0 ) {
         $query_user = ' AND user_id=' . absint( $args[ 'user_id' ] ) ;
     }
-    if ( $args[ 'if_activity_item_id' ] != 0 ) {
+    $query_item_id = '' ;
+    if ( array_key_exists( 'if_activity_item_id' , $args ) && $args[ 'if_activity_item_id' ] != 0 ) {
         $query_item_id = ' AND if_activity_item_id=' . absint( $args[ 'if_activity_item_id' ] ) ;
     }
 
     $args = ls_bp_hashtags_show_hidden_hashtags( $args ) ;
-    if ( $args[ 'special' ] ) {
+    $query_special = '' ;
+    if ( array_key_exists( 'special' , $args ) ) {
         $query_special = ' AND ' . $args[ 'special' ] ;
     }
-    if ( $args[ 'hide_sitewide' ] != '' ) {
+    $query_hide_sitewide = '' ;
+    if ( array_key_exists( 'hide_sitewide' , $args ) && $args[ 'hide_sitewide' ] != '' ) {
         $query_hide_sitewide = ' AND hide_sitewide=' . $args[ 'hide_sitewide' ] ;
     }
 
@@ -87,7 +92,7 @@ function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
  * Define if the hide_sitewide field should by used
  * @param type $args
  * @return string
- * @version 1, 24/4/2014
+ * @version 2, 25/4/2014
  * @author stergatu
  */
 function ls_bp_hashtags_show_hidden_hashtags( $args ) {
@@ -102,7 +107,8 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
             $args[ 'hide_sitewide' ] = '0' ;
             return $args ;
         }
-        if ( $args[ 'if_activity_item_id' ] == 0 ) {
+
+        if ( ! array_key_exists( 'if_activity_item_id' , $args ) || $args[ 'if_activity_item_id' ] == 0 ) {
             $group_ids = implode( ',' , $user_groupids[ 'groups' ] ) ;
             $args[ 'hide_sitewide' ] = '' ;
             $args[ 'special' ] = ' ( hide_sitewide=0 OR  if_activity_item_id in (' . $group_ids . ')) ' ;
