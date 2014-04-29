@@ -92,7 +92,7 @@ function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
  * Define if the hide_sitewide field should by used
  * @param type $args
  * @return string
- * @version 2, 25/4/2014
+ * @version 3, 29/4/2014
  * @author stergatu
  */
 function ls_bp_hashtags_show_hidden_hashtags( $args ) {
@@ -112,13 +112,13 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
             $group_ids = implode( ',' , $user_groupids[ 'groups' ] ) ;
             $args[ 'hide_sitewide' ] = '' ;
             $args[ 'special' ] = ' ( hide_sitewide=0 OR  if_activity_item_id in (' . $group_ids . ')) ' ;
-            return $args ;
+            
         } else {
             if ( in_array( $args[ 'if_activity_item_id' ] , $user_groupids ) ) {
-                $args[ 'hide_sitewide' ] = '1' ;
-                return $args ;
-            }
+                $args[ 'hide_sitewide' ] = '1' ;                
+            }			
         }
+		return $args ;
     }
 }
 
