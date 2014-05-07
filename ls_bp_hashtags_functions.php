@@ -1,9 +1,7 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) )
     exit ;
-
-
-
 
 function etivite_bp_activity_hashtags_current_activity() {
     global $activities_template ;
@@ -12,8 +10,8 @@ function etivite_bp_activity_hashtags_current_activity() {
 
 /**
  * @see http://stackoverflow.com/questions/3060601/retrieve-all-hashtags-from-a-tweet-in-a-php-function
- * @param type $string
- * @return type
+ * @param string $string
+ * @return bool|array
  * @stergatu
  * @version 1, 8/4/2014
  */
@@ -30,13 +28,11 @@ function ls_bp_hashtags_get_from_string( $string ) {
     return $hashtags ;
 }
 
-
 /**
  *
- * @global type $wpdb
- * @param type array
- * @param string $hashtag
- * @return type
+ * @global wpdb $wpdb
+ * @param array $args
+ * @return array of activity ids
  * @version 3, 24/4/2014
  */
 function ls_bp_hashtags_get_activity_ids( $args = array () ) {
@@ -53,14 +49,23 @@ function ls_bp_hashtags_get_activity_ids( $args = array () ) {
 
 /**
  * Create the query criteria
- * @param array $args
+ * @param array $args  {
+ *     An array of arguments. All items are optional.
+ * @param string $hashtag_name. A specific hashtag
+ *      @param int user_id. A specific user_id
+ * @param bool $if_activity_item_id. If it is a item frome the bp_activity table
+ * @param string $special. A complex where critirions
+ * @param bool $hide_sitewide. If we can search the hide_sitewide activity records
+ * }
  * @return string
  * @version 2, 25/4/2014
  * @author stergatu
  */
 function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
     $bp = buddypress() ;
-
+    if ( ! $args ) {
+        $args = array () ;
+    }
     $query_hashtag = '' ;
     if ( isset( $args[ 'hashtag_name' ] ) ) {
         $query_hashtag = ' AND hashtag_name ="' . urldecode( $args[ 'hashtag_name' ] ) . '" ' ;
@@ -90,8 +95,8 @@ function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
 
 /**
  * Define if the hide_sitewide field should by used
- * @param type $args
- * @return string
+ * @param array $args
+ * @return array
  * @version 3, 29/4/2014
  * @author stergatu
  */
@@ -112,13 +117,12 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
             $group_ids = implode( ',' , $user_groupids[ 'groups' ] ) ;
             $args[ 'hide_sitewide' ] = '' ;
             $args[ 'special' ] = ' ( hide_sitewide=0 OR  if_activity_item_id in (' . $group_ids . ')) ' ;
-            
         } else {
             if ( in_array( $args[ 'if_activity_item_id' ] , $user_groupids ) ) {
-                $args[ 'hide_sitewide' ] = '1' ;                
-            }			
+                $args[ 'hide_sitewide' ] = '1' ;
+            }
         }
-		return $args ;
+        return $args ;
     }
 }
 
@@ -156,13 +160,12 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
     return $tag_cloud ;
 }
 
-
 /**
  * Fetches tags and categories from post as hashtags
  *
- * @global type $wpdb
- * @param type $activity
- * @return type
+ * @global wpdb $wpdb
+ * @param BP_Activity_Activity $activity
+ * @return array|WP_Error The requested term data or empty array if no terms found. WP_Error if any of the $taxonomies don't exist.
  * @author stergatu
  * @since
  * @version 1, 10/4/2013
@@ -181,5 +184,3 @@ function ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) {
 
     return $tags ;
 }
-
-
