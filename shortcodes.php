@@ -2,10 +2,10 @@
 
 /**
  *
- * @param type $atts, see wp_generate_tag_cloud() for args values
+ * @param array $atts, see wp_generate_tag_cloud() for args values
  * @return string
  */
-function ls_bp_hashtags_shortcode( $atts ) {
+function ls_bp_hashtags_shortcode( $atts = array () ) {
     return ls_bp_hashtags_generate_cloud( $atts ) ;
 }
 
