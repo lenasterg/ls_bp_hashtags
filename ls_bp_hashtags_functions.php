@@ -126,6 +126,7 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
     }
 }
 
+
 /**
  * Generates hashtags list
  * @uses wp_generate_tag_cloud()
@@ -133,10 +134,31 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
  * @param array $args, see wp_generate_tag_cloud() for args values
  * @return string
  * @author Stergatu Lena <stergatu@cti.gr>
- * @version 2, 23/4/2014
+ * @version 3, 8/5/2014
  * @todo add filters instead of if clauses
  */
 function ls_bp_hashtags_generate_cloud( $args = array () ) {
+    $hashtags = ls_bp_hashtags_get_hashtags( $args ) ;
+    $defaults = array (
+        'smallest' => 10 , 'largest' => 10 , 'unit' => 'pt' , 'number' => 0 ,
+        'format' => 'flat' , 'separator' => ",\n\n" , 'orderby' => 'count' , 'order' => 'DESC' ,
+        'topic_count_text_callback' => 'default_topic_count_text' ,
+        'topic_count_scale_callback' => 'default_topic_count_scale' , 'filter' => 1 ,
+            ) ;
+    $args = wp_parse_args( $args , $defaults ) ;
+    extract( $args ) ;
+    $tag_cloud = wp_generate_tag_cloud( $hashtags , $args ) ;
+    return $tag_cloud ;
+}
+
+/**
+ *Fetches hashtags from database with the link and count
+ * @global wpdb $wpdb
+ * @param array $args
+ * @return array
+ * @version 1, 8/5/2014
+ */
+function ls_bp_hashtags_get_hashtags( $args = array () ) {
     global $wpdb ;
     $bp = buddypress() ;
 
@@ -148,16 +170,7 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
     $results = $wpdb->get_results( 'SELECT COUNT(hashtag_name) as count, CONCAT("#",hashtag_name) as name, CONCAT("' . $link . '", hashtag_slug) as link
         FROM ' . BP_HASHTAGS_TABLE . ' WHERE 1=1 ' . $toWhere . ' GROUP BY hashtag_name' ) ;
 
-    $defaults = array (
-        'smallest' => 10 , 'largest' => 10 , 'unit' => 'pt' , 'number' => 0 ,
-        'format' => 'flat' , 'separator' => ",\n\n" , 'orderby' => 'count' , 'order' => 'DESC' ,
-        'topic_count_text_callback' => 'default_topic_count_text' ,
-        'topic_count_scale_callback' => 'default_topic_count_scale' , 'filter' => 1 ,
-            ) ;
-    $args = wp_parse_args( $args , $defaults ) ;
-    extract( $args ) ;
-    $tag_cloud = wp_generate_tag_cloud( $results , $args ) ;
-    return $tag_cloud ;
+    return $results ;
 }
 
 /**
