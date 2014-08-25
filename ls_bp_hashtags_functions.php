@@ -23,7 +23,7 @@ function ls_bp_hashtags_get_from_string( $string ) {
 
     if ( $matches ) {
         $hashtagsArray = array_count_values( $matches[ 0 ] ) ;
-        $hashtags = array_keys( $hashtagsArray ) ;
+        $hashtags = array_unique( array_keys( $hashtagsArray ) ) ;
     }
     return $hashtags ;
 }
@@ -58,11 +58,19 @@ function ls_bp_hashtags_get_activity_ids( $args = array () ) {
  * @param bool $hide_sitewide. If we can search the hide_sitewide activity records
  * }
  * @return string
- * @version 2, 25/4/2014
+ * @version 3, 25/8/2014 added taxonomy limitations
+ * v2, 25/4/2014
  * @author stergatu
  */
 function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
     $bp = buddypress() ;
+
+    $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
+    $taxonomy_limit = '' ;
+    if ( $data[ 'blogposts' ][ 'use_taxonomy' ] != '1' ) {
+        $taxonomy_limit = ' AND taxonomy = "" ' ;
+    }
+
     if ( ! $args ) {
         $args = array () ;
     }
@@ -89,7 +97,7 @@ function ls_bp_hashtags_generate_query_limitations( $args = array () ) {
         $query_hide_sitewide = ' AND hide_sitewide=' . $args[ 'hide_sitewide' ] ;
     }
 
-    $toWhere = $query_hashtag . $query_user . $query_item_id . $query_special . $query_hide_sitewide ;
+    $toWhere = $taxonomy_limit . $query_hashtag . $query_user . $query_item_id . $query_special . $query_hide_sitewide ;
     return $toWhere ;
 }
 
@@ -126,7 +134,6 @@ function ls_bp_hashtags_show_hidden_hashtags( $args ) {
     }
 }
 
-
 /**
  * Generates hashtags list
  * @uses wp_generate_tag_cloud()
@@ -152,22 +159,33 @@ function ls_bp_hashtags_generate_cloud( $args = array () ) {
 }
 
 /**
- *Fetches hashtags from database with the link and count
+ * Fetches hashtags from database with the link and count
  * @global wpdb $wpdb
  * @param array $args
  * @return array
- * @version 1, 8/5/2014
+ * @version 2, 25/8/2014
+ * v1, 8/5/2014
  */
 function ls_bp_hashtags_get_hashtags( $args = array () ) {
     global $wpdb ;
     $bp = buddypress() ;
-
     $link = $bp->root_domain . "/" . $bp->activity->slug . "/" . BP_ACTIVITY_HASHTAGS_SLUG . "/" ;
     bp_hashtags_set_constants() ;
 
+    $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
+
+    if ( $data[ 'style' ][ 'show_hashsymbol' ] == '1' ) {
+        $hashtag_name = ' CONCAT( "#", hashtag_name)' ;
+    } else {
+        $hashtag_name = 'hashtag_name ' ;
+    }
+
+
     $toWhere = ls_bp_hashtags_generate_query_limitations( $args ) ;
 
-    $results = $wpdb->get_results( 'SELECT COUNT(hashtag_name) as count, CONCAT("#",hashtag_name) as name, CONCAT("' . $link . '", hashtag_slug) as link
+    $results = $wpdb->get_results( 'SELECT COUNT(hashtag_name) as count, '
+            . $hashtag_name . ' as name, '
+            . 'CONCAT("' . $link . '", hashtag_slug) as link
         FROM ' . BP_HASHTAGS_TABLE . ' WHERE 1=1 ' . $toWhere . ' GROUP BY hashtag_name' ) ;
 
     return $results ;
@@ -192,8 +210,22 @@ function ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) {
     $types = apply_filters( 'custom_post_type_use_as_bp_hashtags' , $post_types_use_as_bp_hashtags ) ;
 //$tags = wp_get_object_terms( $post_id , $types ) ;
 
-    $tags = wp_get_object_terms( $post_id , $types , array ( 'fields' => 'names' ) ) ;
+    $tagsfrompost = wp_get_object_terms( $post_id , $types , array ( 'fields' => 'all' ) ) ;
+    $tags = array_map( "only_usefull" , $tagsfrompost ) ;
+
     restore_current_blog() ;
 
     return $tags ;
+}
+
+/**
+ *
+ * @param array $a
+ * @return array
+ * @version 1, 25/8/2014
+ */
+function only_usefull( $a ) {
+    $x[ 'name' ] = $a->name ;
+    $x[ 'taxonomy' ] = $a->taxonomy ;
+    return $x ;
 }
