@@ -3,7 +3,7 @@ Contributors: lenasterg
 Tags: buddypress, activity stream, activity, hashtag, hashtags
 Requires at least: PHP 5.2, WordPress 3.5.2, BuddyPress 1.7
 Tested up to: PHP 5.2.x, WordPress 3.8, BuddyPress 2
-Stable tag: 1.1
+Stable tag: 1.2
 License: GNU General Public License 3.0 or newer (GPL) http://www.gnu.org/licenses/gpl.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Q4VCLDW4BFW6L
 
@@ -53,6 +53,11 @@ you may define a slug for hashtags via the admin settings page
 
 
 == Changelog ==
+= 1.2 =
+Moved the plugin's options from blog wp_options db table to site_meta table.
+Add general option for displaying hashtag symbol or not in widget or in list.
+Add general option for including blogs posts taxonomy (categories, tags etc) as hashtags
+Added the field 'taxonomy' into the bp_hashtags table
 
 = 1.1 =
 New widget: Current group hashtags
@@ -69,4 +74,3 @@ Greek translation added
 
 
 == Extra Configuration ==
-
