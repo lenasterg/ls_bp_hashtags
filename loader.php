@@ -6,12 +6,19 @@
   Author: @lenasterg
   Author URI: http://lenasterg.wordpress.com
   License: GNU GENERAL PUBLIC LICENSE 3.0 http://www.gnu.org/licenses/gpl.txt
-  Version: 1.1
+  Version: 1.2
   Text Domain: bp-hashtags
   Network: true
  */
-define( 'BP_HASHTAGS_VERSION' , '1.1' ) ;
-define( 'BP_HASHTAGS_DB_VERSION' , '1.1' ) ;
+
+if ( ! function_exists( 'get_plugins' ) )
+    require_once( ABSPATH . 'wp-admin/includes/plugin.php' ) ;
+$plugin_folder = get_plugins( '/' . plugin_basename( dirname( __FILE__ ) ) ) ;
+$plugin_file = basename( ( __FILE__ ) ) ;
+
+
+define( 'BP_HASHTAGS_VERSION' , $plugin_folder[ $plugin_file ][ 'Version' ] ) ;
+define( 'BP_HASHTAGS_DB_VERSION' , $plugin_folder[ $plugin_file ][ 'Version' ] ) ;
 define( 'BP_HASHTAGS_BASENAME' , plugin_basename( __FILE__ ) ) ;
 if ( ! defined( 'BP_ACTIVITY_HASHTAGS_SLUG' ) ) {
     define( 'BP_ACTIVITY_HASHTAGS_SLUG' , 'tags' ) ;
@@ -29,7 +36,7 @@ function ls_bp_hashtags_init() {
         load_textdomain( 'bp-hashtags' , dirname( __FILE__ ) . '/languages/' . get_locale() . '.mo' ) ;
     }
 
-    $data = maybe_unserialize( get_option( 'ls_bp_hashtags' ) ) ;
+//    $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
 
     $path = dirname( __FILE__ ) ;
     $files = array (
@@ -38,6 +45,7 @@ function ls_bp_hashtags_init() {
         'ls_bp_hashtags_filters.php' ,
         'widgets.php' ,
         'shortcodes.php' ,
+        'extra/utcwStrategyBpHashtags.php'
             ) ;
 
     if ( is_super_admin() ) {
@@ -61,7 +69,8 @@ function etivite_plugin_get_version() {
  * SQL create command for BP_HASHTAGS_TABLE
  * @since version 0.5
  * @author stergatu
- * @version 2.0, 23/4/2014
+ * @version 3, 25/8/2014 added taxonomy field
+ * v2.0, 23/4/2014
  * @param type $charset_collate
  * @return string
  */
@@ -74,12 +83,14 @@ function bp_hashtags_tableCreate( $charset_collate ) {
                                 hashtag_slug TEXT NOT NULL,
 		  		table_name VARCHAR(255) DEFAULT '" . $activity_table . "',
                                 value_id bigint(20) NOT NULL,
+                                taxonomy varchar(255) DEFAULT '',
                                 if_activity_component VARCHAR(255) DEFAULT '',
                                 if_activity_item_id bigint(20),
                                 hide_sitewide bool DEFAULT 0,
                                 user_id int NOT NULL,
                                 created_ts DATETIME NOT NULL,
 				KEY hashtag_name (hashtag_name),
+                                KEY taxonomy (taxonomy),
                                 KEY if_activity_item_id (if_activity_item_id),
                                 KEY if_activity_component (if_activity_component),
 				KEY hide_sitewide (hide_sitewide),
@@ -128,7 +139,7 @@ function bp_hashtags_install_upgrade() {
     }
     if ( ! get_site_option( 'bp-hashtags-db-version' ) ) {
         $sql[] = bp_hashtags_tableCreate( $charset_collate ) ;
-        add_option( 'bp-hashtags-db-version' , BP_HASHTAGS_DB_VERSION ) ;
+        add_site_option( 'bp-hashtags-db-version' , BP_HASHTAGS_DB_VERSION ) ;
     }
     update_site_option( 'bp-hashtags-db-version' , BP_HASHTAGS_DB_VERSION ) ;
 
@@ -147,5 +158,3 @@ function bp_hashtags_set_constants() {
     }
     do_action( 'bp_hashtags_constants_loaded' ) ;
 }
-
-
