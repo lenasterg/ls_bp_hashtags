@@ -1,5 +1,4 @@
 <?php
-
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) )
     exit ;
@@ -71,26 +70,42 @@ function etivite_bp_activity_hashtags_action_router() {
 
 add_action( 'wp' , 'etivite_bp_activity_hashtags_action_router' , 3 ) ;
 
-
-
 /**
  *
  * @global type $wpdb
  * @param object $activity
  * @author Stergatu Lena <stergatu@cti.gr>
- * @version 1, 8/4/2014
+ * @version 2, 25/8/2014 add check for blog posts taxomony
+ * v1, 8/4/2014
  */
 function ls_bp_hashtags_add_activity_id( $activity ) {
     global $wpdb ;
     bp_hashtags_set_constants() ;
     do_action( 'pre_hashtags_insert' , $activity ) ;
 
-    if ( ($activity->type == 'new_blog_post') || ('new_groupblog_post') ) {
-        $hashtags_from_post_types = ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) ;
+
+    $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
+    if ( $data[ 'blogposts' ][ 'use_taxonomy' ] == '1' ) {
+        if ( ($activity->type == 'new_blog_post') || ('new_groupblog_post') ) {
+            $hashtags_from_post_types = ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) ;
+            foreach ( $hashtags_from_post_types as $key => $value ) {
+                $wpdb->insert(
+                        BP_HASHTAGS_TABLE , array (
+                    'hashtag_name' => htmlspecialchars( $value[ 'name' ] ) ,
+                    'hashtag_slug' => urlencode( htmlspecialchars( $value[ 'name' ] ) ) ,
+                    'value_id' => $activity->id ,
+                    'if_activity_component' => $activity->component ,
+                    'if_activity_item_id' => $activity->item_id ,
+                    'hide_sitewide' => $activity->hide_sitewide ,
+                    'created_ts' => $activity->date_recorded ,
+                    'user_id' => $activity->user_id ,
+                    'taxonomy' => $value[ 'taxonomy' ]
+                ) ) ;
+            }
+        }
     }
     $hashtags_included_to_content = str_replace( "#" , '' , ls_bp_hashtags_get_from_string( $activity->content ) ) ;
-    $hashtags = array_unique( array_merge( $hashtags_from_post_types , $hashtags_included_to_content ) ) ;
-    foreach ( $hashtags as $hashtag ) {
+    foreach ( $hashtags_included_to_content as $hashtag ) {
         $wpdb->insert(
                 BP_HASHTAGS_TABLE , array (
             'hashtag_name' => htmlspecialchars( $hashtag ) ,
@@ -104,6 +119,7 @@ function ls_bp_hashtags_add_activity_id( $activity ) {
         ) ) ;
     }
 }
+
 add_action( 'bp_activity_after_save' , 'ls_bp_hashtags_add_activity_id' ) ;
 
 /**
@@ -187,10 +203,10 @@ add_action( 'bp_activity_post_form_options' , 'ls_bp_hashtags_add_hashtags_text'
  */
 function ls_bp_hashtags_activity_tab() {
     ?>
-            <li id="activity-tags"><a href="<?php
-    bp_activity_directory_permalink() ;
-    echo BP_ACTIVITY_HASHTAGS_SLUG ;
-    ?>" title="<?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?>"><?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?></a></li>
+        <li id="activity-tags"><a href="<?php
+        bp_activity_directory_permalink() ;
+        echo BP_ACTIVITY_HASHTAGS_SLUG ;
+        ?>" title="<?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?>"><?php _e( 'Popular Hashtags across network' , 'bp-hashtags' ) ; ?></a></li>
     <?php
 }
 
