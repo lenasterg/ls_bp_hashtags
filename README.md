@@ -57,6 +57,15 @@ you may define a slug for hashtags via the admin settings page
 
 == Changelog ==
 
+= 1.2 =
+Moved the plugin's options from blog wp_options db table to site_meta table.
+
+Add general option for displaying hashtag symbol or not in widget or in list.
+
+Add general option for including blogs posts taxonomy (categories, tags etc) as hashtags
+
+Added the field 'taxonomy' into the bp_hashtags table
+
 = 1.1 =
 New widget: Current group hashtags
 Fix the issue with activity of private groups.
