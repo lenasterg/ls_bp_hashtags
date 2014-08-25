@@ -14,7 +14,11 @@ function ls_bp_hashtags_admin_add_admin_menu() {
     $new = Array () ;
     $new[ 'slug' ] = 'tag' ;
     $new[ 'install_version' ] = etivite_plugin_get_version() ;
-    add_option( 'ls_bp_hashtags' , $new ) ;
+    add_site_option( 'ls_bp_hashtags' , $new ) ;
+//    if ( $old = get_option( 'ls_bp_hashtags' ) ) {
+//        update_site_option( 'ls_bp_hashtags' , $old ) ;
+//        delete_option( 'ls_bp_hashtags' ) ;
+//    }
 }
 
 add_action( bp_core_admin_hook() , 'ls_bp_hashtags_admin_add_admin_menu' ) ;
@@ -22,7 +26,7 @@ add_action( bp_core_admin_hook() , 'ls_bp_hashtags_admin_add_admin_menu' ) ;
 /**
  *
  * @global type $bp
- * @version 2 stergatu
+ * @version 2, 25/8/2014 stergatu added option of displaying hashtag symbol
  */
 function ls_bp_hashtags_admin() {
     $bp = buddypress() ;
@@ -36,7 +40,17 @@ function ls_bp_hashtags_admin() {
         } else {
             $new[ 'slug' ] = false ;
         }
+        if ( isset( $_POST[ 'ls_show_hashtags_symbol' ] ) && ! empty( $_POST[ 'ls_show_hashtags_symbol' ] ) ) {
+            $new[ 'style' ][ 'show_hashsymbol' ] = '1' ;
+        } else {
+            $new[ 'style' ][ 'show_hashsymbol' ] = '0' ;
+        }
 
+        if ( isset( $_POST[ 'ah_blog_taxomony' ] ) && ! empty( $_POST[ 'ah_blog_taxomony' ] ) && $_POST[ 'ah_blog_taxomony' ] == 1 ) {
+            $new[ 'blogposts' ][ 'use_taxonomy' ] = '1' ;
+        } else {
+            $new[ 'blogposts' ][ 'use_taxonomy' ] = '0' ;
+        }
 
         //		if( isset( $_POST['ah_blog'] ) && !empty( $_POST['ah_blog'] ) && $_POST['ah_blog'] == 1) {
 //	        $new['blogposts']['enabled'] = true;
@@ -44,7 +58,7 @@ function ls_bp_hashtags_admin() {
 //			$new['blogposts']['enabled'] = false;
 //		}
 
-        update_option( 'ls_bp_hashtags' , $new ) ;
+        update_site_option( 'ls_bp_hashtags' , $new ) ;
 
         $updated = true ;
     }
@@ -57,8 +71,8 @@ function ls_bp_hashtags_admin() {
             if ( isset( $updated ) ) : echo "<div id='message' class='updated fade'><p>" . __( 'Settings updated.' , 'bp-hashtags' ) . "</p></div>" ;
             endif ;
 
-            $data = maybe_unserialize( get_option( 'ls_bp_hashtags' ) ) ;
-            ?>
+            $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
+        ?>
 
                 <form action="<?php echo network_admin_url( '/admin.php?page=bp-activity-hashtags-settings' ) ?>" name="groups-autojoin-form" id="groups-autojoin-form" method="post">
 
@@ -68,16 +82,20 @@ function ls_bp_hashtags_admin() {
                         <th><label for="ah_tag_slug"><?php _e( 'Slug' , 'bp-hashtags' ) ?></label></th>
                         <td><input type="text" name="ah_tag_slug" id="ah_tag_slug" value="<?php echo $data[ 'slug' ] ; ?>" /></td>
                     </tr>
+                    <tr>
+                        <th><label for="ls_show_hashtags_symbol"><?php _e( 'Show # for word each in widget and in hashtag list? ' , 'bp-hashtags' ) ?></label></th>
+                        <td><input type="checkbox" name="ls_show_hashtags_symbol" id="ls_show_hashtags_symbol" value="1"      <?php checked( $data[ 'style' ][ 'show_hashsymbol' ] , '1' ) ; ?> /></td>
+                    </tr>
                 </table>
-                <!--
-                                                    <h4><?php _e( 'Blog Posts/Comments - in Activity Stream' , 'bp-hashtags' ) ; ?></h4>
+                <h4><?php _e( 'Blog Posts' , 'bp-hashtags' ) ; ?></h4>
 
-                        <!--			<table class="form-table">
-                                                    <tr>
-                                <th><label for="ah_activity"><?php _e( 'Enable hashtags in blog activity stream' , 'bp-hashtags' ) ?></label></th>
+                    <table class="form-table">
+                    <tr>
+                        <th><label for="ah_blog_taxomony"><?php _e( 'Use posts categories/tags also as hashtags?' , 'bp-hashtags' ) ?></label></th>
+                        <td><input type="checkbox" name="ah_blog_taxomony" id="ah_blog_taxomony" value="1"  <?php checked( $data[ 'blogposts' ][ 'use_taxonomy' ] , '1' ) ; ?> /></td>
 
-                                </tr>
-                                        </table>-->
+                        </tr>
+                </table>
 
                 <?php if ( ! is_multisite() ) { ?>
                     <h4><?php _e( 'Blog Posts/Comments - in Main Blog' , 'bp-hashtags' ) ; ?></h4>
@@ -93,10 +111,10 @@ function ls_bp_hashtags_admin() {
                             </tr>
                         </table>
                     <?php } ?>
-                    -->
+
                     <?php wp_nonce_field( 'ls_bp_hashtags_admin' ) ; ?>
 
-                    <p class="submit"><?php submit_button() ; ?></p>
+                <p class="submit"><?php submit_button() ; ?></p>
 
                 </form>
         </div>
@@ -130,7 +148,7 @@ function ls_bp_hashtags_admin() {
 function ls_bp_hashtags_settings_link( $links , $file ) {
     if ( $file == BP_HASHTAGS_BASENAME ) {
         return array_merge( $links , array (
-            'settings' => '<a href="' . add_query_arg( array ( 'page' => 'bp-activity-hashtags-settings' ) , ls_bp_hashtags_find_admin_location() ) . '">' .__( 'Settings' , 'bp-hashtags' ) . '</a>' ,
+            'settings' => '<a href="' . add_query_arg( array ( 'page' => 'bp-activity-hashtags-settings' ) , ls_bp_hashtags_find_admin_location() ) . '">' . __( 'Settings' , 'bp-hashtags' ) . '</a>' ,
                 ) ) ;
     }
     return $links ;
