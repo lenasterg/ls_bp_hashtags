@@ -16,7 +16,7 @@ function ls_bp_hashtags_header() {
     echo ' <div class="generic-button reset-hashtags" style="margin: 10px;">  <a href="/' . bp_get_activity_slug() . '">' . __( 'Remove filter' , 'bp-hashtags' ) . '</a></div>' ;
 }
 
-add_action( 'bp_before_activity_loop' , 'ls_bp_hashtags_header' ) ;
+add_action( 'bp_before_directory_activity_list', 'ls_bp_hashtags_header' );
 
 function etivite_bp_activity_hashtags_insert_rel_head() {
     $bp = buddypress() ;
@@ -184,7 +184,7 @@ function ls_bp_hashtags_cloud() {
     echo '</div>' ;
 }
 
-add_action( 'bp_before_activity_loop' , 'ls_bp_hashtags_cloud' , 1 ) ;
+add_action( 'bp_before_directory_activity_list', 'ls_bp_hashtags_cloud', 1 );
 
 /**
  * Add a description under the activity post form about the hashtag usage
@@ -211,4 +211,3 @@ function ls_bp_hashtags_activity_tab() {
 }
 
 //add_action( 'bp_activity_type_tabs' , 'ls_bp_hashtags_activity_tab' ) ;
-
