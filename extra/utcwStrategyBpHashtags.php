@@ -14,7 +14,9 @@
  * @since 8 Μαϊ 2014
  *
  */
-class utcwStrategyBpHashtags extends UTCW_SelectionStrategy {
+if ( class_exists( 'UTCW_SelectionStrategy' ) ) {
+
+    class utcwStrategyBpHashtags extends UTCW_SelectionStrategy {
 
     protected $plugin ;
 
@@ -56,3 +58,4 @@ class utcwStrategyBpHashtags extends UTCW_SelectionStrategy {
 
 }
 
+}
