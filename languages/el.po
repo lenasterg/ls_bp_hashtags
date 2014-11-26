@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BP Hashtags\n"
-"POT-Creation-Date: 2014-04-11 10:38+0200\n"
-"PO-Revision-Date: 2014-04-11 10:39+0200\n"
+"POT-Creation-Date: 2014-04-24 16:42+0200\n"
+"PO-Revision-Date: 2014-04-24 16:42+0200\n"
 "Last-Translator: Lena Stergatu <stergatu@cti.gr>\n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -17,77 +17,51 @@ msgstr ""
 "X-Poedit-SearchPath-0: C:\\xampp\\htdocs\\blogsRun\\wp-content\\plugins"
 "\\ls_bp_hashtags\n"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:36
-#, fuzzy
-msgid "Buddypress Hastags Admin"
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:11
+msgid "Buddypress Hashtags Admin"
 msgstr "Buddypress Hashtags"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:38
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:11
+msgid "Buddypress Hashtags"
+msgstr "Buddypress Hashtags"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:54
+msgid "Buddypress Hastags Admin"
+msgstr "Διαχείριση Buddypress Hashtags"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:57
 msgid "Settings updated."
 msgstr "Οι ρυθμίσεις ενημερώθηκαν."
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:45
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:65
 msgid "Hashtag Base Slug"
 msgstr "Hashtag Base Slug"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:48
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:68
 msgid "Slug"
 msgstr "Σύντομο όνομα"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:53
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:73
 msgid "Blog Posts/Comments - in Activity Stream"
 msgstr ""
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:57
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:77
 #, fuzzy
 msgid "Enable hashtags in blog activity stream"
 msgstr "Ενεργοποίηση επισημάνσεων # στο κεντρικό ιστολογίο"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:63
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:83
 #, fuzzy
 msgid "Blog Posts/Comments - in Main Blog"
 msgstr "Ενεργοποίηση επισημάνσεων # στο κεντρικό ιστολογίο"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls-bp-hashtags-admin.php:67
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:87
 msgid "Enable hashtags on main blog"
 msgstr "Ενεργοποίηση επισημάνσεων # στο κεντρικό ιστολογίο"
 
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags-loader.php:70
-msgid "Buddypress Hashtags Admin"
-msgstr "Buddypress Hashtags"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags-loader.php:70
-msgid "Buddypress Hashtags"
-msgstr "Buddypress Hashtags"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags.php:70
-#, php-format
-msgid "Activity results for #%s "
-msgstr "Δραστηριότητα σχετική με  #%s"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags.php:71
-msgid "Remove filter"
-msgstr "Αφαίρεση Φίλτρου"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags.php:87
-msgid "Activity results for #"
-msgstr "Δραστηριότητα σχετική με  #%s"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags.php:294
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:40
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:53
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:71
-msgid "Popular Hashtags"
-msgstr "Δημοφιλή"
-
-#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/bp-activity-hashtags.php:332
-msgid ""
-"Add the # symbol, to mark keywords(just like in twitter). When a user clicks "
-"on the word with #, all relavant posts fill appear."
-msgstr ""
-"Προσθέστε το σύμβολο #, για να επισημάνετε λέξεις-κλειδιά.  Πατώντας σε μια "
-"λέξη με το σύμβολο #, θα εμφανιστούν όλες οι αναρτήσεις έχουν επισημανθεί με "
-"την λέξη-κλειδί."
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/admin/ls_bp_hashtags_admin.php:133
+msgid "Settings"
+msgstr "Ρυθμίσεις"
 
 #: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/feeds/bp-activity-hashtags-feed.php:16
 #: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/feeds/bp-activity-hashtags-feed.php:19
@@ -104,13 +78,60 @@ msgstr "Σχόλια (%s)"
 msgid "In reply to"
 msgstr "Σε απάντηση στο"
 
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:16
+#, php-format
+msgid "Activity results for #%s "
+msgstr "Δραστηριότητα σχετική με  #%s"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:17
+msgid "Remove filter"
+msgstr "Αφαίρεση Φίλτρου"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:156
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:193
 #: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:40
-msgid "The most commonly used hashtags. Only for public activity"
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:53
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:71
+msgid "Popular Hashtags across network"
+msgstr "Δημοφιλή θέματα σε όλο τον δικτυακό τόπο"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:159
+msgid "Hashtags by user"
+msgstr "Θέματα για τα οποία γράφει ο χρήστης"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:163
+msgid "Hashtags in group"
+msgstr "Θέματα στην ομάδα"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_actions.php:179
+msgid ""
+"Add the # symbol, to mark keywords(just like in twitter). When a user clicks "
+"on the word with #, all relavant posts fill appear."
 msgstr ""
+"Προσθέστε το σύμβολο #, για να επισημάνετε λέξεις-κλειδιά.  Πατώντας σε μια "
+"λέξη με το σύμβολο #, θα εμφανιστούν όλες οι αναρτήσεις έχουν επισημανθεί με "
+"την λέξη-κλειδί."
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/ls_bp_hashtags_filters.php:106
+msgid "Activity results for #"
+msgstr "Δραστηριότητα σχετική με  #%s"
+
+#: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:40
+#, fuzzy
+msgid ""
+"The most commonly used hashtags. Only for public activity and from groups of "
+"logged in user."
+msgstr ""
+"Τα πιο  συχνά θέματα με χρήση #. Μόνο για δημόσια δραστήριοτητα και "
+"δραστηριότητα από τις ομάδες του συνδεδεμένου χρήστη."
 
 #: C:\xampp\htdocs\blogsRun\wp-content\plugins\ls_bp_hashtags/widgets.php:76
 msgid "Title:"
 msgstr "Τίτλος:"
+
+#, fuzzy
+#~ msgid "Popular Terms "
+#~ msgstr "Δημοφιλή"
 
 #, fuzzy
 #~ msgid "<div>Activity results for #%s </div>"
