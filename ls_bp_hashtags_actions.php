@@ -6,14 +6,14 @@ if ( ! defined( 'ABSPATH' ) )
 /**
  *
  * @return type
- * @version 2, stergatu 8/4/2014
+ * @version 3, stergatu 27/11/2014
  */
 function ls_bp_hashtags_header() {
-    $bp = buddypress() ;
+    $bp = buddypress();
     if ( ! bp_is_activity_component() || $bp->current_action != BP_ACTIVITY_HASHTAGS_SLUG )
-        return ;
-    printf( "<div style='margin: 10px;'>  " . __( "Activity results for #%s " , 'bp-hashtags' ) , urldecode( $bp->action_variables[ 0 ] ) . '</div>' ) ;
-    echo ' <div class="generic-button reset-hashtags" style="margin: 10px;">  <a href="/' . bp_get_activity_slug() . '">' . __( 'Remove filter' , 'bp-hashtags' ) . '</a></div>' ;
+	return;
+    printf( "<div style='margin: 10px;'>  " . __( "Activity results for #%s ", 'bp-hashtags' ), urldecode( $bp->action_variables[0] ) . '</div>' );
+    echo ' <div class="generic-button reset-hashtags" style="margin: 10px;">  <a href="' . home_url() . '/' . bp_get_activity_slug() . '">' . __( 'Remove filter', 'bp-hashtags' ) . '</a></div>';
 }
 
 add_action( 'bp_before_directory_activity_list', 'ls_bp_hashtags_header' );
@@ -211,4 +211,3 @@ function ls_bp_hashtags_activity_tab() {
 }
 
 //add_action( 'bp_activity_type_tabs' , 'ls_bp_hashtags_activity_tab' ) ;
-
