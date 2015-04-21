@@ -135,7 +135,7 @@ function ls_bp_hashtags_admin() {
         return false ;
     $locationMu = 'settings.php' ;
     $location = bp_core_do_network_admin() ? $locationMu : 'options-general.php' ;
-    return $location ;
+       return $location ;
 }
 
 /**
@@ -143,12 +143,13 @@ function ls_bp_hashtags_admin() {
  *  @param type $links
  * @param type $file
  * @return array
- * @version 1, 9/4/2014 stergatu
+ * @version 2, 21/4/2015
+ * v1, 9/4/2014 stergatu
  */
 function ls_bp_hashtags_settings_link( $links , $file ) {
     if ( $file == BP_HASHTAGS_BASENAME ) {
         return array_merge( $links , array (
-            'settings' => '<a href="' . add_query_arg( array ( 'page' => 'bp-activity-hashtags-settings' ) , ls_bp_hashtags_find_admin_location() ) . '">' . __( 'Settings' , 'bp-hashtags' ) . '</a>' ,
+            'settings' => '<a href="' . esc_url( add_query_arg(array ( 'page' => 'bp-activity-hashtags-settings' ) , ls_bp_hashtags_find_admin_location() )). '">' . __( 'Settings' , 'bp-hashtags' ) . '</a>' ,
                 ) ) ;
     }
     return $links ;
