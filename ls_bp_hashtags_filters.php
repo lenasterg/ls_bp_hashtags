@@ -121,3 +121,23 @@ function etivite_bp_activity_hashtags_activity_feed_link( $feedurl ) {
 }
 
 add_filter( 'bp_get_sitewide_activity_feed_link' , 'etivite_bp_activity_hashtags_activity_feed_link' , 1 , 1 ) ;
+
+
+/**
+ * It is used into the
+ * @param type $found_template
+ * @param type $templates
+ * @return type
+ */
+function ls_bp_hashtags_template( $found_template, $templates ) {
+    $bp = buddypress();
+    if ( ! bp_is_activity_component() || $bp->current_action != BP_ACTIVITY_HASHTAGS_SLUG ) {
+	return $found_template;
+    }
+    if ( empty( $found_template ) ) {
+	$found_template = bp_locate_template( 'activity/index.php' );
+    }
+    return apply_filters( 'ls_bp_hashtags_template_filter', $found_template );
+}
+
+

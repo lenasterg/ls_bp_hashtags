@@ -11,8 +11,9 @@
   Network: true
  */
 
-if ( ! function_exists( 'get_plugins' ) )
-    require_once( ABSPATH . 'wp-admin/includes/plugin.php' ) ;
+if ( ! function_exists( 'get_plugins' ) ) {
+    require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
 $plugin_folder = get_plugins( '/' . plugin_basename( dirname( __FILE__ ) ) ) ;
 $plugin_file = basename( ( __FILE__ ) ) ;
 
@@ -57,7 +58,7 @@ function ls_bp_hashtags_init() {
     }
 }
 
-add_action( 'bp_include' , 'ls_bp_hashtags_init' , 88 ) ;
+add_action( 'bp_init', 'ls_bp_hashtags_init', 88 );
 
 function etivite_plugin_get_version() {
     $plugin_data = get_plugin_data( __FILE__ ) ;

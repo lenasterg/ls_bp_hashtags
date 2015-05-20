@@ -20,8 +20,15 @@ header('Status: 200 OK');
 	<generator>http://buddypress.org/?v=<?php echo BP_VERSION ?></generator>
 	<language><?php echo get_option('rss_language'); ?></language>
 	<?php do_action('etivite_bp_activity_hashtags_feed_head'); ?>
-	<?php if ( bp_has_activities( 'max=50&display_comments=stream&search_terms=#'. $bp->action_variables[0] . '<' ) ) : ?>
-		<?php while ( bp_activities() ) : bp_the_activity(); ?>
+	<?php
+	$arg = array(
+	    'max' => '50',
+	    'display_comments' => 'stream',
+	    'search_terms' => '#' . $bp->action_variables[0]
+	);
+	if ( bp_has_activities( $args ) ) :
+	    ?>
+    <?php while ( bp_activities() ) : bp_the_activity(); ?>
 			<?php if ( etivite_bp_activity_hashtags_current_activity() == 0 ) : ?>
 				<pubDate><?php echo mysql2date('D, d M Y H:i:s O', bp_get_activity_date_recorded(), false); ?></pubDate>
 			<?php endif; ?>

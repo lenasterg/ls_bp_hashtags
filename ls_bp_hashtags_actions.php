@@ -49,7 +49,9 @@ function etivite_bp_activity_hashtags_action_router() {
         return false ;
 
     if ( empty( $bp->action_variables[ 0 ] ) ) {
-        bp_core_load_template( 'activity/index' ) ;
+	add_filter( 'bp_located_template', 'ls_bp_hashtags_template', 10, 2 );
+	bp_core_load_template( 'activity/index' );
+	remove_filter( 'bp_located_template', 'filter_bp_located_template', 10, 2 );
     }
     if ( count( $bp->action_variables ) > 1 ) {
         if ( 'feed' == $bp->action_variables[ 1 ] ) {
@@ -59,13 +61,13 @@ function etivite_bp_activity_hashtags_action_router() {
 
             $wp_query->is_404 = false ;
             status_header( 200 ) ;
-
             include_once( dirname( __FILE__ ) . '/feeds/bp-activity-hashtags-feed.php' ) ;
-            die ;
+
         }
     }
-
-    bp_core_load_template( 'activity/index' ) ;
+    add_filter( 'bp_located_template', 'ls_bp_hashtags_template', 10, 2 );
+    bp_core_load_template( 'activity/index' );
+    remove_filter( 'bp_located_template', 'filter_bp_located_template', 10, 2 );
 }
 
 add_action( 'wp' , 'etivite_bp_activity_hashtags_action_router' , 3 ) ;
@@ -75,7 +77,8 @@ add_action( 'wp' , 'etivite_bp_activity_hashtags_action_router' , 3 ) ;
  * @global type $wpdb
  * @param object $activity
  * @author Stergatu Lena <stergatu@cti.gr>
- * @version 2, 25/8/2014 add check for blog posts taxomony
+ * @version v3, 19/5/2015 fix  a bug
+ * v2, 25/8/2014 add check for blog posts taxomony
  * v1, 8/4/2014
  */
 function ls_bp_hashtags_add_activity_id( $activity ) {
@@ -86,8 +89,8 @@ function ls_bp_hashtags_add_activity_id( $activity ) {
 
     $data = maybe_unserialize( get_site_option( 'ls_bp_hashtags' ) ) ;
     if ( $data[ 'blogposts' ][ 'use_taxonomy' ] == '1' ) {
-        if ( ($activity->type == 'new_blog_post') || ('new_groupblog_post') ) {
-            $hashtags_from_post_types = ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) ;
+        if ( ($activity->type == 'new_blog_post') || ($activity->type == 'new_groupblog_post') ) {
+	    $hashtags_from_post_types = ls_bp_hashtags_getblogpost_tags_as_hashtags( $activity ) ;
             foreach ( $hashtags_from_post_types as $key => $value ) {
                 $wpdb->insert(
                         BP_HASHTAGS_TABLE , array (
